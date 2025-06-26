@@ -1,6 +1,6 @@
 
 import { Button } from "@/components/ui/button";
 export default function Home() {
-  return <Button variant={"destructive"}>click me </Button>
+  return <Button variant={"destructive"}>click hme </Button>
   
 }
