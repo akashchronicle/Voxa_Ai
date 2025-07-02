@@ -225,8 +225,8 @@ const onSocial= (provider:"github" | "google")=>{
 
   <h2 className="text-3xl font-bold text-[#1A1A1A] tracking-tight -mt-2">Voxa AI</h2>
 
-  <p className="text-sm text-muted-foreground max-w-xs mt-1">
-    Intelligence that connects with you
+  <p className="text-sm text-muted-foreground max-w-xs mt-1 italic animate-fadeIn">
+    Build Agent with Aptitude, but with an Attitude
   </p>
 </div>
 
