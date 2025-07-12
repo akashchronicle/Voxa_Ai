@@ -10,7 +10,9 @@ import { DEFAULT_PAGE, DEFAULT_PAGE_SIZE, MAX_PAGE_SIZE, MIN_PAGE_SIZE } from "@
 export const agentsRouter = createTRPCRouter({
     // Todo:change 'getmany' and 'getOne' to 'protectedd procedure'
 
-    getOne: protectedProcedure.input(z.object({id:z.string()})).query(async({input})=>{
+    getOne: protectedProcedure
+    .input(z.object({id:z.string()}))
+    .query(async({input,ctx})=>{
         const [exitingAgent]= await db
         .select({
             meetingCount: sql<number>`8`,
@@ -18,10 +20,19 @@ export const agentsRouter = createTRPCRouter({
             
         })
         .from(agents)
-        .where(eq(agents.id,input.id))
+        .where(and(
+            eq(agents.id,input.id),
+            eq(agents.userId,ctx.auth.user.id),
+        ))
+
+           if(!exitingAgent){
+            throw new TRPCError({code:"NOT_FOUND", message:"Agents not found"})
+           }
         // throw new TRPCError({code:"BAD_REQUEST"})
         return exitingAgent;
     }),
+
+ 
     
     getMany: protectedProcedure
     .input(z.object({
