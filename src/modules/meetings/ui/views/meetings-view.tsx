@@ -10,7 +10,8 @@ export const MeetingsView = () => {
   const { data } = useQuery(trpc.meetings.getMany.queryOptions({}));
 
   return (
-    <div>
+    <div className="overflow-x-scroll">
+      
       {JSON.stringify(data)}
     </div>
   );
@@ -20,7 +21,7 @@ export const MeetingsView = () => {
 export const MeetingsViewLoading=()=>{
     return (
         <LoadingState
-            title="Loading Agents"
+            title="Loading Meetings"
             description="This may takes few seconds"
             />
     )
@@ -29,7 +30,7 @@ export const MeetingsViewLoading=()=>{
 export const MeetingsViewError=()=>{
     return (
         <ErrorState
-      title="Error Loading Agents"
+      title="Error Loading Meetings"
       description="Something went wrong"
     />
     )

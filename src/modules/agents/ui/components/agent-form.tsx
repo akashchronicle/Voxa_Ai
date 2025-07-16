@@ -127,7 +127,12 @@ const UpdateAgent = useMutation(
                 <Textarea {...field} placeholder="You are a professional mock interviewer. Ask interview-style questions, give feedback, and help users prepare for real job interviews" />
                 </FormControl>
                  <FormMessage/>
-                <div className="flex justify-between gap-x-2">
+                
+                
+            </FormItem>
+            )}
+            />
+            <div className="flex justify-between gap-x-2">
                     {onCancel && (
                         <Button
                         variant="ghost"
@@ -139,10 +144,6 @@ const UpdateAgent = useMutation(
                     <Button disabled={isPending} type="submit">{isEdit?"Update":"Create"}</Button>
                 </div>
                
-                
-            </FormItem>
-            )}
-            />
     </form>
   </Form>
 );
