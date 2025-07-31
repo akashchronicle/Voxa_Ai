@@ -4,9 +4,10 @@ import { inngest } from "@/inngest/client";
 import { StreamTranscriptItem } from "@/modules/meetings/types";
 import { eq, inArray } from "drizzle-orm";
 import JSONL from "jsonl-parse-stringify"
-import {createAgent, openai, gemini,  TextMessage} from "@inngest/agent-kit"
+import {createAgent, TextMessage} from "@inngest/agent-kit"
+import { createAzureOpenAIChatCompletion } from "@/lib/azure-openai";
 
-const summarizer = createAgent({
+const summarizer = {
   name: "summarizer",
   system: `
 You are an expert summarizer. You write readable, concise, simple content. You are given a transcript of a meeting and you need to summarize it.
@@ -29,17 +30,16 @@ Example:
 - Feature X automatically does Y
 - Mention of integration with Z
 `.trim(),
-  model: gemini({
-    model: "gemini-1.5-flash", // or another supported Gemini model
-    apiKey: process.env.GEMINI_API_KEY!,
-  }),
-  //  model: openai({
-  //   model:"gpt-4o" , 
-  //   apiKey:process.env.OPENAI_API_KEY,
-  // }),
-
-});
-
+  async run(transcript: string) {
+    const response = await createAzureOpenAIChatCompletion({
+      messages: [
+        { role: "system", content: this.system },
+        { role: "user", content: transcript },
+      ],
+    });
+    return { output: response.choices.map((c) => ({ content: c.message.content })) };
+  },
+};
 
 
 export const meetingsProcessing = inngest.createFunction(

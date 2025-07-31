@@ -132,6 +132,11 @@
   }
 }
 
+.font-playfair {
+  font-family: var(--font-playfair);
+}
+
+
 @layer base{
   button:not(:disabled),
   [role="button"]:not(:disabled){

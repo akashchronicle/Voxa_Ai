@@ -2,8 +2,11 @@ export const config = {
   runtime: "nodejs",
 };
 
-import OpenAi, { OpenAI } from "openai";
 import { ChatCompletionMessageParam } from "openai/resources/index.mjs";
+import {
+  createAzureOpenAIChatCompletion,
+  getAzureOpenAIClient,
+} from "@/lib/azure-openai";
 
 import { and, eq, not } from "drizzle-orm";
 import { generateAvatarUri } from "@/lib/avatar";
@@ -22,7 +25,7 @@ import { streamVideo } from "@/lib/stream-video";
 import { inngest } from "@/inngest/client";
 import { streamChat } from "@/lib/stream-chat";
 
-const openaiClient= new OpenAI({apiKey:process.env.OPENAI_API_KEY! });
+// Azure OpenAI adapter will be used instead
 
 
 function verifySignatureWithSDK(body: string, signature: string): boolean {
@@ -102,25 +105,42 @@ if (!existingAgent) {
 
 const call = streamVideo.video.call("default", meetingId);
 
-  try{const realtimeClient = await streamVideo.video.connectOpenAi({
-  call,
-  openAiApiKey: process.env.OPENAI_API_KEY!,
-  agentUserId: existingAgent.id,
-});
+// open ai agent is connected 
 
-realtimeClient.updateSession({
-  instructions: existingAgent.instructions,
-});
+  try {
+    const realtimeClient = await streamVideo.video.connectOpenAi({
+      call,
+      openAiApiKey: process.env.OPENAI_API_KEY!, // Must use standard OpenAI key
+      agentUserId: existingAgent.id,
+    });
+    realtimeClient.updateSession({
+      instructions: existingAgent.instructions,
+    });
+
+    
   } catch (err: any) {
-  console.error("connectOpenAi failed:", err);
-  // Check for OpenAI quota/credit error
-  if (err?.response?.status === 402 || (err?.message && err.message.includes("quota"))) {
-    return NextResponse.json({ error: "OpenAI API quota exceeded or no credit. Please add credit to your OpenAI account." }, { status: 402 });
+    console.error("connectOpenAi failed:", err);
+    if (
+      err?.response?.status === 402 ||
+      (err?.message && err.message.includes("quota"))
+    ) {
+      return NextResponse.json(
+        {
+          error:
+            "OpenAI API quota exceeded or no credit. Please check your OpenAI account.",
+        },
+        { status: 402 }
+      );
+    }
+    return NextResponse.json(
+      {
+        error: "OpenAI integration failed",
+        details: err?.message || String(err),
+      },
+      { status: 500 }
+    );
   }
-  return NextResponse.json({ error: "OpenAI integration failed", details: err?.message || String(err) }, { status: 500 });
-}
-
- }else if (eventType === "call.session_participant_left") {
+} else if (eventType === "call.session_participant_left") {
   const event = payload as CallSessionParticipantLeftEvent;
   const meetingId = event.call_cid.split(":")[1]; // call_cid is formatted as "type:id"
 
@@ -248,16 +268,16 @@ const previousMessages = channel.state.messages
     content: message.text || "",
   }));
 
-const GPTResponse = await openaiClient.chat.completions.create({
+const GPTResponse = await createAzureOpenAIChatCompletion({
   messages: [
     { role: "system", content: instructions },
     ...previousMessages,
     { role: "user", content: text },
   ],
-  model: "gpt-4o",
+  // Azure uses deployment name instead of model, so no model param
 });
 
-const GPTResponseText = GPTResponse.choices[0].message.content;
+const GPTResponseText = GPTResponse.choices[0]?.message?.content;
 
 if (!GPTResponseText) {
   return NextResponse.json(
