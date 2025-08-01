@@ -1,8 +1,11 @@
 import Link from "next/link";
 import Image from "next/image";
+import { useEffect, useRef } from "react";
 import {
   CallControls,
   SpeakerLayout,
+  useCall,
+  useCallStateHooks,
 } from "@stream-io/video-react-sdk";
 
 interface Props {
@@ -11,6 +14,22 @@ interface Props {
 }
 
 export const CallActive = ({ onLeave, meetingName }: Props) => {
+  const call = useCall();
+  const { useMicrophoneState } = useCallStateHooks();
+  const { isEnabled: isMicEnabled } = useMicrophoneState();
+  const hasInitialized = useRef(false);
+
+  // Prevent audio conflicts between Stream Video and voice agent
+  useEffect(() => {
+    if (!hasInitialized.current && call) {
+      // Ensure microphone is disabled by default to prevent conflicts
+      if (isMicEnabled) {
+        call.microphone.disable();
+      }
+      hasInitialized.current = true;
+    }
+  }, [call, isMicEnabled]);
+
   return (
     <div className="flex flex-col justify-between p-4 h-full text-white">
       <div className="bg-[#101213] rounded-full p-4 flex items-center gap-4">

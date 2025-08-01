@@ -1,5 +1,8 @@
 import React from "react";
 import { motion } from "framer-motion";
+import { Button } from "@/components/ui/button";
+import { Play, Bot } from "lucide-react";
+import Link from "next/link";
 
 const features = [
   "🎧 Listening",
@@ -21,7 +24,7 @@ const HeroSection = () => (
           initial={{ opacity: 0, x: -40 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.6, ease: "easeOut", delay: 0.1 }}
-          className="text-4xl md:text-6xl font-bold tracking-tight text-[#3B2F2F] leading-snug !text-[#3B2F2F]"
+          className="text-4xl md:text-6xl font-bold tracking-tight text-foreground leading-snug"
           >
           Your AI Teammate in <br />Every Meeting
           
@@ -50,6 +53,26 @@ const HeroSection = () => (
               {feature}
             </div>
           ))}
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 40 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, ease: "easeOut", delay: 0.6 }}
+          className="flex flex-col sm:flex-row gap-4 mt-8"
+        >
+          <Button size="lg" className="text-lg px-8 py-6" asChild>
+            <Link href="/demo">
+              <Play className="h-5 w-5 mr-2" />
+              Try AI Agent Demo
+            </Link>
+          </Button>
+          <Button variant="outline" size="lg" className="text-lg px-8 py-6" asChild>
+            <Link href="/agents">
+              <Bot className="h-5 w-5 mr-2" />
+              Create Your Agent
+            </Link>
+          </Button>
         </motion.div>
       </div>
 
@@ -85,43 +108,7 @@ const HeroSection = () => (
       className="text-center mb-10"
     >
       
-      <div className="flex flex-col items-center">
-     
-      <div className="text-xl md:text-2xl italic font-thin leading-snug font-playfair text-muted-foreground flex items-center justify-center gap-1 pt-2">
-  
-      {/* <motion.div
-  className="mt-1 flex justify-center text-orange-300 text-xl" 
-  initial={{ y: -10, opacity: 0 }}
-  animate={{ y: [0, 8, 0], opacity: [0.6, 1, 0.6] }}
-  transition={{ repeat: Infinity, duration: 3, ease: "easeInOut" }}
->
-  🪶
-</motion.div> */}
-<span>The Voice in the Call That Never Forgets </span>
-
-  {/* Dots appear right after the text */}
-  <div className="flex gap-1 pl-1 pt-4">
-    {[0, 1, 2].map((i) => (
-      <motion.div
-        key={i}
-        className="h-2 w-2 rounded-full bottom-8 bg-orange-400"
-        animate={{
-          y: [0, -6, 0],
-          opacity: [0.7, 1, 0.7],
-        }}
-        transition={{
-          repeat: Infinity,
-          duration: 1,
-          delay: i * 0.2,
-        }}
-      />
-    ))}
-  </div>
-</div>
-
-
-  </div>
-  
+      
 
 
       

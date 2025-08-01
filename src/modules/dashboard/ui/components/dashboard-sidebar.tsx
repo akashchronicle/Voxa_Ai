@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/sidebar";
 import { cn } from "@/lib/utils";
 import { Separator } from "@radix-ui/react-separator";
-import { BotIcon, StarIcon, VideoIcon } from "lucide-react";
+import { BotIcon, StarIcon, VideoIcon, SparklesIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link"; // ✅ correct
 import { usePathname } from "next/navigation";
@@ -20,6 +20,11 @@ import { DashboardUserButton } from "./dashboardUserButton";
 
 
 const firstSection=[
+    {
+        icons:SparklesIcon,
+        label:"Try Demo",
+        href:"/demo",
+    },
     {
         icons:VideoIcon,
         label:"Meetings",
@@ -30,32 +35,30 @@ const firstSection=[
         label:"Agents",
         href:"/agents",
     },
+    
 ];
 
-const secondSection=[
-    {
-        icons:StarIcon,
-        label:"Upgrade",
-        href:"/upgrade",
-    },
-   
-];
+
 
 export const DashboardSidebar=()=>{
     // const pathname="/meetings";
     const pathname=usePathname();
     
     return (
-        <Sidebar>
-        <SidebarHeader className="text-sidebar-accent-foreground">
-        <Link href="/" className="flex items-center gap-2 px-2 pt-2">
-        <Image src="/logoVox.png"  height ={66} width={66} alt="Voxa AI"  />
-        <p className="text-2xl font-bold text-black">Voxa AI</p>        </Link>
+        <Sidebar className="bg-white border-r border-gray-100 shadow-sm">
+        <SidebarHeader className="text-foreground px-6 py-4">
+        <Link href="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
+        <Image src="/logoVox.png" height={48} width={48} alt="Voxa AI" className="rounded-lg" />
+        <div>
+          <p className="text-xl font-bold text-gray-900">Voxa AI</p>
+          <p className="text-xs text-gray-500">AI Meeting Assistant</p>
+        </div>
+        </Link>
         </SidebarHeader>
-        <div className="px-4 py-0.5 ">
-        <Separator className="bg-gray-300 h-px w-full my-1" />  
-              </div>
-        <SidebarContent>
+         <div className="px-6 py-2">
+        <Separator className="bg-gray-200 h-px w-full" />  
+        </div> 
+        <SidebarContent className="px-3 py-2">
             <SidebarGroup>
                 <SidebarGroupContent>
                     <SidebarMenu>
@@ -64,18 +67,22 @@ export const DashboardSidebar=()=>{
                                 <SidebarMenuButton 
                                 asChild
                                 className={cn(
-                                    "h-10 hover:bg-linear-to-r/oklch border border-transparent hover:border-[#5D6B68] from-sidebar-accent from-5% via-30% via-sidebar/50 to-sidebar/50",
-                                    pathname===item.href && "bg-linear-to-r/oklch border-[#5D6B68]/10 "
+                                    "h-12 px-4 rounded-lg transition-all duration-200 hover:bg-gray-50 hover:shadow-sm border border-transparent hover:border-gray-200",
+                                    pathname===item.href && "bg-primary/10 border-primary/20 text-primary shadow-sm"
                                     )}
                                     
                                     isActive={pathname===item.href}>
-                                <Link href={item.href}>
-                                <item.icons className="size-5"/>
-                                    <span className="text-sm font-medium tracking-tight">
+                                <Link href={item.href} className="flex items-center gap-3 w-full">
+                                <item.icons className={cn(
+                                    "size-5 transition-colors",
+                                    pathname===item.href ? "text-primary" : "text-gray-600"
+                                )}/>
+                                    <span className={cn(
+                                        "text-sm font-medium tracking-tight",
+                                        pathname===item.href ? "text-primary" : "text-gray-700"
+                                    )}>
                                     {item.label}
                                     </span>
-                                    
-                                   
                                 </Link>
                                 </SidebarMenuButton>
                                 
@@ -85,9 +92,9 @@ export const DashboardSidebar=()=>{
                 </SidebarGroupContent>
             </SidebarGroup>
 
-            <div className="px-4 py-0.5 ">
-        <Separator className="bg-gray-300 h-px w-full " />  
-              </div>
+            {/* <div className="px-3 py-2">
+        <Separator className="bg-gray-200 h-px w-full" />  
+        </div>
             <SidebarGroup>
                 <SidebarGroupContent>
                     <SidebarMenu>
@@ -96,28 +103,32 @@ export const DashboardSidebar=()=>{
                                 <SidebarMenuButton 
                                 asChild
                                 className={cn(
-                                    "h-10 hover:bg-linear-to-r/oklch border border-transparent hover:border-[#5D6B68] from-sidebar-accent from-5% via-30% via-sidebar/50 to-sidebar/50",
-                                    pathname===item.href && "bg-linear-to-r/oklch border-[#5D6B68]/10 "
-                                    )}
-                                    
-                                    isActive={pathname===item.href}>
-                                <Link href={item.href}>
-                                <item.icons className="size-5"/>
-                                    <span className="text-sm font-medium tracking-tight">
-                                    {item.label}
-                                    </span>
-                                    
-                                   
-                                </Link>
-                                </SidebarMenuButton>
+                                    "h-12 px-4 rounded-lg transition-all duration-200 hover:bg-gray-50 hover:shadow-sm border border-transparent hover:border-gray-200",
+                                    pathname===item.href && "bg-primary/10 border-primary/20 text-primary shadow-sm"
+                                )}
                                 
-                            </SidebarMenuItem>
-                        ))}
-                    </SidebarMenu>
-                </SidebarGroupContent>
-            </SidebarGroup>
-        </SidebarContent>
-        <SidebarFooter className="text-white">
+                                isActive={pathname===item.href}>
+                            <Link href={item.href} className="flex items-center gap-3 w-full">
+                            <item.icons className={cn(
+                                "size-5 transition-colors",
+                                pathname===item.href ? "text-primary" : "text-gray-600"
+                            )}/>
+                                <span className={cn(
+                                    "text-sm font-medium tracking-tight",
+                                    pathname===item.href ? "text-primary" : "text-gray-700"
+                                )}>
+                                {item.label}
+                                </span>
+                            </Link>
+                            </SidebarMenuButton>
+                            
+                        </SidebarMenuItem>
+                    ))}
+                </SidebarMenu>
+            </SidebarGroupContent>
+        </SidebarGroup> */}
+        </SidebarContent> 
+        <SidebarFooter className="text-foreground px-6 py-4 border-t border-gray-100">
             <DashboardUserButton/>
         </SidebarFooter>
         
